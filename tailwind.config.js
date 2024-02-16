@@ -8,7 +8,10 @@ module.exports = withMT({
   theme: {
     extend: {
       colors: {
-        header_blue:  '#071c3b' 
+        dark_blue:  '#071c3b', 
+        light_blue: '#BAD4F5',
+        medium_blue: '#2570DE'
+
       }
     },
   },

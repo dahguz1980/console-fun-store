@@ -31,7 +31,7 @@ const NavBar = () => {
   
     return (
         <div className="max-h-[768px] w-[100%]">
-            <Navbar  className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 pt-5 lg:px-8 lg:py-5 bg-header_blue bg-opacity-100 border-0">
+            <Navbar  className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 pt-5 lg:px-8 lg:py-5 bg-dark_blue bg-opacity-100 border-0">
                 <div className="flex items-center justify-between text-blue-gray-900">
                     <div className="flex items-center justify-evenly">
                         <IconButton
