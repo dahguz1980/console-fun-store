@@ -22,7 +22,6 @@ export function getProductMockAPI (id) {
                 reject("Id not valid")
             } else {
                 const productsFiltered = productsJSON.find((product)=> product.sku === id)
-                console.log(productsFiltered)
                 if (productsFiltered===undefined) {
                     reject ("Product Not Found")
                 } else {

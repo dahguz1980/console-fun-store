@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {getProductsMockAPI} from '../../mockAPI/mockAPI'
 import { Link, useParams } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import NumberGroup from "../NumberGroup/NumberGroup";
-import AddToCartButton from "../AddToCartButton/AddToCartButton";
+import {collection, getDocs, getFirestore} from "firebase/firestore"
 
 
 const ItemListContainer = () => {
@@ -12,13 +11,23 @@ const ItemListContainer = () => {
     const [products, setProduct] = useState([])
     const [loading, setLoading] = useState (true);
 
+    
+    
     useEffect(() => {
         setLoading(true);
-        getProductsMockAPI(category_id).then(res => { 
-            setProduct(res)
-        })
-        .finally (()=> setLoading(false))
+        const db = getFirestore();
+            
+            const all_products = collection(db, "products");
 
+            getDocs(all_products)
+            .then((collection) => {
+                const products_retrieved = collection.docs.map((document)=> {
+                    return { id: document.id, ...document.data()}
+                })
+                setProduct(products_retrieved);
+            })
+            .finally (() => setLoading(false))
+        
     
     }, [category_id]);
 
@@ -40,12 +49,11 @@ const ItemListContainer = () => {
                             </Link>
                             <div className="px-6 py-4 text-center min-h-24 flex items-center">
                                 <Link to={"/item/"+item.sku}>
-                                    <div className="font-bold text-xl mb-2">{item.name}</div>
+                                    <div className="font-bold text-xl mb-2">{item.title}</div>
                                 </Link>
                             </div>
                             <div className="flex flex-row justify-evenly w-full items-start">
-                                <NumberGroup maxQty={item.stock} />
-                                <AddToCartButton />
+                                <NumberGroup item={item}   />
                             </div>
                         </div>
                     ))}
