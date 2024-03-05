@@ -3,23 +3,11 @@ import { CartContext } from '../CartProvider/CartProvider';
 
 const AddToCartButton = ({product, qty}) => {
 
-  const cartContext = useContext(CartContext);
-
-  const addToCart = () => {
-    
-    const productInCart = cartContext.find((p) => (p.product.sku === product.sku))
-
-    // validar si el producto esta en el carrito, suma la cantidad nueva seleccionada
-    if (productInCart) {
-        productInCart.qty+=qty;
-    } else {
-        cartContext.push({product: product, qty: qty})
-    }
-  }
+  const {addToCart} = useContext(CartContext);
 
   return (
     <>
-      <button className="bg-dark_blue text-light_blue w-24 rounded-sm h-8" onClick={addToCart}>Agregar</button>
+      <button className="bg-dark_blue text-light_blue w-24 rounded-sm h-8" onClick={() => addToCart(product, qty)}>Agregar</button>
     </>
   )
 }

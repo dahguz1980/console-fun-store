@@ -2,7 +2,9 @@ import React, {useEffect, useState} from "react";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import NumberGroup from "../NumberGroup/NumberGroup";
-import {collection, getDocs, getFirestore} from "firebase/firestore"
+import {collection, doc, getDocs, query, where} from "firebase/firestore"
+import { db } from "../../firebaseInit";
+
 
 
 const ItemListContainer = () => {
@@ -11,22 +13,24 @@ const ItemListContainer = () => {
     const [products, setProduct] = useState([])
     const [loading, setLoading] = useState (true);
 
-    
-    
     useEffect(() => {
         setLoading(true);
-        const db = getFirestore();
             
-            const all_products = collection(db, "products");
+        let all_products = collection(db, "products");
 
-            getDocs(all_products)
-            .then((collection) => {
-                const products_retrieved = collection.docs.map((document)=> {
-                    return { id: document.id, ...document.data()}
-                })
-                setProduct(products_retrieved);
+        if (category_id !== undefined) {
+            const categoryRef = doc(db, "categories", category_id);
+            all_products = query(all_products, where("category","==",categoryRef))
+        }
+            
+        getDocs(all_products)
+        .then((collection) => {
+            const products_retrieved = collection.docs.map((document)=> {
+                return { id: document.id, ...document.data()}
             })
-            .finally (() => setLoading(false))
+            setProduct(products_retrieved);
+        })
+        .finally (() => setLoading(false))
         
     
     }, [category_id]);
@@ -44,12 +48,12 @@ const ItemListContainer = () => {
                     {products.map((item) => (
                         <div key={item.id} className="w-80 overflow-hidden m-2 flex flex-col justify-center items-center border-light_blue border-2 h-96">
                             
-                            <Link to={"/item/"+item.sku}
+                            <Link to={"/item/"+item.id}
                                 ><img src={item.thumbnail} alt={item.sku} width="260" height="196"/>
                             </Link>
                             <div className="px-6 py-4 text-center min-h-24 flex items-center">
-                                <Link to={"/item/"+item.sku}>
-                                    <div className="font-bold text-xl mb-2">{item.title}</div>
+                                <Link to={"/item/"+item.id}>
+                                    <div className="font-bold text-xl mb-2">{item.name}</div>
                                 </Link>
                             </div>
                             <div className="flex flex-row justify-evenly w-full items-start">

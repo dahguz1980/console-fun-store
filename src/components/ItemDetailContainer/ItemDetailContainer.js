@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {getProductMockAPI} from '../../mockAPI/mockAPI'
 import { useParams } from "react-router-dom";
 import "./ItemDetailContainer.css"
 import Loading from "../Loading/Loading";
 import NumberGroup from "../NumberGroup/NumberGroup";
-import AddToCartButton from "../AddToCartButton/AddToCartButton";
+import {doc,  getDoc } from "firebase/firestore";
+import { db } from "../../firebaseInit";
 
 
 const ItemDetailContainer = () => {
@@ -15,10 +15,18 @@ const ItemDetailContainer = () => {
 
     useEffect(() => {
         setLoading(true);
-        getProductMockAPI(id).then(res => { 
-            setProduct(res)
+        console.log(id)
+        const sku_product = doc(db, "products", id);      
+
+        getDoc(sku_product)
+        .then((doc) => {
+            if (doc.exists()) {
+                setProduct({ id: doc.id, ...doc.data() })
+                console.log(JSON.stringify(doc))
+            }
         })
-        .finally (()=> setLoading(false))
+        .finally (() => setLoading(false))
+        
     }, [id]);
 
 
@@ -41,8 +49,7 @@ const ItemDetailContainer = () => {
                             <p className="text-gray-700 text-base">{product.description}</p>
                         </div>
                         <div className="flex flex-row justify-evenly w-1/2 items-start mt-3">
-                                <NumberGroup maxQty={product.stock} />
-                                <AddToCartButton />
+                                <NumberGroup item={product} />
                         </div>
                     </div>
                 </section>

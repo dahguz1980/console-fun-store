@@ -21,28 +21,11 @@ const NumberGroup = ({item}) => {
     };
 
     /**
-     * Controla los cambios que se hagan en el input de cantidad
+     * Controla los cambios que se hagan en el input de cantidad en caso de que se elimine el readonly
      * @param {*} event 
      */
-    const inputChangedHandler = (event) => {
-   
-        // Si tiene un valor numerico
-        if (!isNaN(event.target.value)) {
-            const val = parseInt(event.target.value);
-        
-            //  menor o igual a cero setea 1
-            if (val<=0) {
-                setQty(1)
-            } else if (val>item.stock) { // si es mayor al max permitido, setear al máximo
-                setQty(item.stock)
-            } else { // sino setear el valor ingresado
-                setQty(val);
-            } 
-        } else {
-            setQty(1) //si no es numero setear a 1
-        }
-        
-
+    const inputPrevent = (event) => {
+        event.preventDefault()
     };
 
     return (
@@ -50,7 +33,7 @@ const NumberGroup = ({item}) => {
             <div className='flex flex-col text-center'>
                 <div className="flex flex-row items-center">
                     <button className="bg-light_blue text-dark_blue font-bold h-8 px-4 rounded-l" onClick={decrementQty}>-</button>
-                    <input type="text" className="text-center border-t border-b border-gray-300 h-8 w-10" value={qty} onChange={(event)=>inputChangedHandler(event)} />
+                    <input type="text" className="text-center border-t border-b border-gray-300 h-8 w-10" value={qty} onChange={(event)=>inputPrevent(event)} readOnly /> 
                     <button className="bg-light_blue text-dark-blue font-bold h-8 px-4 rounded-r" onClick={incrementQty}>+</button>
                 </div>
                 { item.stock >1 ? <p className='text-xs'>Max {item.stock} unidades</p> : <p className='text-xs text-red-900'>Solo queda 1 unidad</p> }

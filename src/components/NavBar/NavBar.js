@@ -9,10 +9,13 @@ import {
 
 import CarWidget from "../CarWidget/CarWidget";
 import { Link, NavLink } from "react-router-dom";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { db } from "../../firebaseInit";
 
 const NavBar = () => {
     
     const [openNav, setOpenNav] = useState(false);
+    const [navItems, setNavItem] = useState([])
  
     useEffect(() => {
       window.addEventListener(
@@ -21,13 +24,31 @@ const NavBar = () => {
       );
     }, []);
 
+    useEffect (() => {
+            
+        // Obtiene todas las categorias ordenadas por nombre
+        const all_categories = collection(db, "categories");
+        const q = query(all_categories, orderBy('title', 'asc'))
+
+        getDocs(q)
+        .then((collection) => {
+            const navItems_retrieved = collection.docs.map((document)=> {
+                return { id_document: document.id, ...document.data()}
+            })
+            setNavItem(navItems_retrieved);
+        })
+    },[])
+
     const navList = (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-gray-200">
-          <NavLink to="category/nintendo_switch" className="p-1 font-normal flex items-center ring-deep-orange-500">Nintendo</NavLink>
-          <NavLink to="category/playstation" className="p-1 font-normal flex items-center">Playstation</NavLink>
-          <NavLink to="category/xbox" className="p-1 font-normal flex items-center">Xbox</NavLink>
+            {
+                // Itera sobre las categorias para mostrar el menú de opciones
+                navItems.map((item) => (
+                    <NavLink key={item.id} to={'category/'+item.id_document} className="p-1 font-normal flex items-center ring-deep-orange-500">{item.title}</NavLink>
+                ))
+            }
         </ul>
-      );
+    ) 
   
     return (
         <div className="max-h-[768px] w-[100%]">
