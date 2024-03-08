@@ -11,15 +11,16 @@ import { CartContext } from '../CartProvider/CartProvider';
 const CarWidget = () => {
 
   const {totalProducs} = useContext(CartContext);
+  const shoppingCartImage = <IconButton><ShoppingCartIcon className="h-4 w-4" /></IconButton>
 
   return (
     <>
       <Link to={'/cart'}>
+        { totalProducs >0 ? 
           <Badge content={totalProducs} withBorder>
-              <IconButton>
-                  <ShoppingCartIcon className="h-4 w-4" />
-              </IconButton>
+              {shoppingCartImage}
           </Badge>
+        : shoppingCartImage }
       </Link>
     </>
   )
