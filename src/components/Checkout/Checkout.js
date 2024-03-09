@@ -24,28 +24,35 @@ const Checkout = () => {
   const [showError, setShowError] = useState(false)
   const [orderNo, setOrderNo] = useState(0)
   const [loading, setLoading] = useState(false)
-
-
+  const [activateButton, setActivateButton] = useState (false)
 
   const [showErrorEmail, setShowErrorEmail] = useState (false)
 
   useEffect (() => {
       if (email !== repeatEmail) {
         setShowErrorEmail(true)
+        setActivateButton(false)
       } else {
         setShowErrorEmail(false)
+        
+        if (fullName && email) {
+          setActivateButton(true)
+        } else {
+          setActivateButton(false)
+        }
+  
       }
 
-  }, [email, repeatEmail])
+  }, [email, repeatEmail, fullName])
 
   const handleSubmit = (e) => {
-    setLoading(true);
     // evitar el comportamiento normal del manejador
     e.preventDefault();
 
     // asegurar que todos los campos tengan datos
     // No se almacena los datos de las tc 
     if (!showErrorEmail && fullName && email) {
+      setLoading(true);
 
       const datos = {"comprador":fullName, "Correo Electronico": email, "Forma de Pago": "Tarjeta de Credito", "items": JSON.stringify(cartItems)}
       
@@ -67,7 +74,6 @@ const Checkout = () => {
     }
 
   };
- 
 
   if (loading) {
     return (
@@ -81,7 +87,7 @@ const Checkout = () => {
       <div className="max-w-[24rem]">      
         { !showError && !showSuccess && 
         <form onSubmit={handleSubmit} className="mt-12 flex flex-col gap-4">
-          <div>
+          <div className="w-full">
               <Typography
                 variant="small"
                 color="blue-gray"
@@ -91,7 +97,6 @@ const Checkout = () => {
               </Typography>
               <Input
                 type="text"
-                required={true}
                 placeholder="Jhon Doe"
                 value={fullName}
                 onChange={(event) => setFullName(event.target.value)}
@@ -112,7 +117,6 @@ const Checkout = () => {
               <Input
                 type="email"
                 placeholder="name@mail.com"
-                required={true}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -133,7 +137,6 @@ const Checkout = () => {
               <Input
                 type="email"
                 placeholder="name@mail.com"
-                required={true}
                 value={repeatEmail}
                 onChange={(event) => setRepeatEmail(event.target.value)}
                 className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -150,8 +153,10 @@ const Checkout = () => {
               </Typography>
               }          
             </div>
-
+            { activateButton ?
             <Button type="submit" size="lg">Pagar Ahora</Button>
+            : <Button type="submit" size="lg" disabled>Pagar Ahora</Button>}
+
             <Typography
               variant="small"
               color="gray"

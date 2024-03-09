@@ -13,10 +13,11 @@ const ItemDetailContainer = () => {
     const {id} = useParams()  
     const [product, setProduct] = useState({})
     const [loading, setLoading] = useState (true)
+    const [showNoProduct, setShowNoProduct] = useState(false)
 
     useEffect(() => {
         setLoading(true);
-        console.log(id)
+
         const sku_product = doc(db, "products", id);      
 
         getDoc(sku_product)
@@ -31,6 +32,9 @@ const ItemDetailContainer = () => {
                     sku: data.sku,
                     stock: data.stock,
                     thumbnail: data.thumbnail })
+                setShowNoProduct(false)
+            } else {
+                setShowNoProduct(true)
             }
         })
         .finally (() => setLoading(false))
@@ -47,6 +51,8 @@ const ItemDetailContainer = () => {
     } else {
         return (
             <main>
+                { showNoProduct && <div className="flex flex-row flex-wrap justify-center mt-10"><h1 className="text-center">No se encontro el producto </h1></div> } 
+                { !showNoProduct && 
                 <section key={product.id} className="flex flex-row flex-wrap justify-center mt-10">
                     <div className="w-520 max-h-392px">
                         <img src={product.large_image} alt={product.name} width="520" height="392" />
@@ -65,7 +71,7 @@ const ItemDetailContainer = () => {
                                 <NumberGroup item={product} />
                         </div>
                     </div>
-                </section>
+                </section> }
             </main>
             
         )
