@@ -9,7 +9,7 @@ const CartContainer = () => {
 
  const {cartItems, totalPrice, removeToCart} = useContext(CartContext)
 
- const TABLE_HEAD = ["SKU", "NOMBRE", "PRECIO UNITARIO", "CANTIDAD", "TOTAL", ""]
+ const TABLE_HEAD = ["SKU", "NOMBRE", "PRECIO UNITARIO", "CANTIDAD", "TOTAL", "ELIMINAR"]
 
 
 return (
